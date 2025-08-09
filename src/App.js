@@ -1,8 +1,4 @@
-import logo from './logo.svg';
 import './App.css';
-import { useEffect } from 'react';
-import { requestFirebaseNotificationPermission } from './index';
-import Button from '@mui/material/Button';
 import MenuView from './MenuView';
 import AdminView from './AdminView'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';

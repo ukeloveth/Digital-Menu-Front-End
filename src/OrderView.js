@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css'
 import { Button } from '@mui/material';
 import { MoreHorizOutlined } from '@mui/icons-material';
@@ -11,18 +11,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Delete } from '@mui/icons-material';
 import { formatPrice, getTimeAgo } from './utils';
 import { orderAPI } from './api';
 import dayjs from 'dayjs';
 
 
 
-function createData(tableNumber, meals, orderAt, totalPrice, status) {
-    return { tableNumber, meals, orderAt, totalPrice, status };
-  }
   
-const ViewOrder = (props) => {
+const ViewOrder = () => {
   
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedOrder, setSelectedOrder] = React.useState(null);

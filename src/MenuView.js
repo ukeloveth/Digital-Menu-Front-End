@@ -7,10 +7,7 @@ import { Card } from '@mui/material';
 import './Cart'
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import data from './data';
-import { Link } from 'react-router-dom';
 import Cart from './Cart';
-import { formatPrice } from './utils';
 import { orderAPI } from './api';
 
 const MenuView = () => {

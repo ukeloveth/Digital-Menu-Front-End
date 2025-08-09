@@ -13,57 +13,34 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {getTimeAgo} from './utils'
 import { orderAPI } from './api';
-import QRCode from 'qrcode';
-import printJS from 'print-js';
+// import printJS from 'print-js';
 import dayjs from 'dayjs';
 
-// QR Code Print Component
-const QRCodePrintComponent = React.forwardRef(({ qrCodeDataUrl, tableNumber }, ref) => (
-  <div ref={ref} style={{ padding: '20px', textAlign: 'center' }}>
-    <h2>Table {tableNumber} QR Code</h2>
-    <div style={{ margin: '20px 0' }}>
-      <img 
-        src={qrCodeDataUrl} 
-        alt="QR Code" 
-        style={{ 
-          width: '300px', 
-          height: '300px',
-          border: '1px solid #ccc',
-          padding: '10px'
-        }} 
-      />
-    </div>
-    <p>Scan this QR code to access the menu</p>
-    <p style={{ fontSize: '12px', color: '#666' }}>
-      Generated on: {new Date().toLocaleString()}
-    </p>
-  </div>
-));
 
-const QrcodeView = (props) => {
+const QrcodeView = () => {
     const [qrcodes, setQrcodes] = React.useState([]);
     const [activeRow, setActiveRow] = React.useState(null);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [error, setError] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [tableNumber, setTableNumber] = React.useState('')
-    const [printData, setPrintData] = React.useState(null);
+    // const [printData, setPrintData] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    const handlePrint = () => {
-      if (printData) {
-        printJS({
-          printable: printData,
-          type: 'image',
-          style: `
-            @media print {
-              body { margin: 0; padding: 20px; text-align: center; }
-              img { max-width: 100%; height: auto; }
-            }
-          `
-        });
-      }
-    };
+    // const handlePrint = () => {
+    //   if (printData) {
+    //     printJS({
+    //       printable: printData,
+    //       type: 'image',
+    //       style: `
+    //         @media print {
+    //           body { margin: 0; padding: 20px; text-align: center; }
+    //           img { max-width: 100%; height: auto; }
+    //         }
+    //       `
+    //     });
+    //   }
+    // };
 
         const fetchQrcodeData = async () => {
       setLoading(true);
@@ -125,7 +102,7 @@ const QrcodeView = (props) => {
       data.tableNumber = tableNumber;
       data.menuUrl = window.location.origin
       try {
-        const res = await orderAPI.generateQrcode(data);
+        await orderAPI.generateQrcode(data);
         
         await fetchQrcodeData();
         setTableNumber('')
