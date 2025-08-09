@@ -1,0 +1,250 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.main-body{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 95vh;
+  height: max-content;
+  padding: 1rem !important;
+  align-items: flex-end;
+
+}
+.category-item{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  
+}
+.card {
+  width: 15rem;
+  height: 7rem;
+  border-radius: 15px;
+  background-color: white !important;
+  padding:1rem;
+   margin:10px;
+   cursor: pointer;
+}
+.card-selected {
+  width: 15rem;
+  height: 5rem;
+  border-radius: 15px;
+  background-color: gainsboro !important;
+  padding:1rem;
+   margin:10px;
+   cursor: pointer;
+}
+.admin-container{
+  width: 50%;
+  min-height: 20vh;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  @media  screen and (max-width : 1024px) {
+    width: 100% !important;
+  }
+}
+.cart{
+  width: 30rem;
+  min-height: 5rem;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  justify-self: flex-end;
+  /* margin-right: 2rem !important; */
+  margin-bottom: 2rem !important;
+  @media  screen and (max-width : 1024px) {
+    width: 92% !important;
+    
+  }
+  
+}
+.view-order{
+  width: 95%;
+  min-height: 5rem;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  justify-self: flex-end;
+  /* margin-right: 2rem !important; */
+  margin-bottom: 2rem !important;
+  
+}
+.cart-header{
+  font-family: Raleway;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+.cart-item-header{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.cart-item{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.cart-item-name{
+  font-family: 'Raleway';
+   font-size: 12px;
+   font-weight: 500;
+   line-height: 15px;
+   margin: 0 !important;
+   width: 40% !important;
+   text-align: left;
+}
+.cart-item-quatity{
+  font-family: 'Raleway';
+   font-size: 12px;
+   font-weight: 500;
+   line-height: 15px;
+   margin: 0 !important;
+   width: 25% !important;
+   text-align: left;
+}
+.cart-item-price{
+  font-family: 'Raleway';
+   font-size: 14px;
+   font-weight: 500;
+   line-height: 15px;
+   width: 25% !important;
+   margin: 0 !important;
+   text-align: left;
+}
+
+.cart-total-amount{
+  font-family: 'Raleway';
+   font-size: 16px;
+   font-weight: 600;
+   line-height: 18px;
+}
+
+.cart-icon-container{
+ width: 100%;
+ display: flex;
+ justify-content: flex-end;
+}
+
+.cart-submit-order{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 3rem;
+}
+.cart-submit-order-btn{
+  font-family: 'Raleway';
+   font-size: 16px;
+   font-weight: 600;
+   color: white !important;
+   background-color: #6dee7e !important;
+   width: 90px !important;
+   text-transform: capitalize !important;
+}
+.cart-submit-order-btn-disabled{
+  font-family: 'Raleway';
+   font-size: 16px;
+   font-weight: 600;
+   color: white !important;
+   background-color: #cdd5ce !important;
+   width: 90px !important;
+   text-transform: capitalize !important;
+}
+.admin-header{
+  font-family: 'Raleway';
+   font-size: 18px;
+   font-weight: 600;
+   color: black !important;
+   text-transform: capitalize !important;
+}
+.admin-top-section-container{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  
+  @media  screen and (max-width : 1024px) {
+    flex-direction: column !important;
+  }
+}
+.admin-top-section-left{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  min-height:  5rem;
+}
+.admin-top-section-input-container{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-input-container{
+  display: flex;
+  width: 50% !important;
+}
+.admin-top-section-input-btn{
+  width: 90%;
+  font-family: 'Raleway';
+   font-size: 16px;
+   font-weight: 600;
+   color: white !important;
+   background-color: #6dee7e !important;
+   /* width: 90px !important; */
+   text-transform: capitalize !important;
+   height: 3.5rem;
+}
+
