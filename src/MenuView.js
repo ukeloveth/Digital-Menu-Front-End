@@ -99,7 +99,7 @@ const MenuView = () => {
         <div key={index}> 
           {menu && menu.categories.map((category, categoryIndex) => (
             <div  className='category-item' key={categoryIndex}>
-            <Accordion  >
+            <Accordion  className='accordion-shadow'>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls={`panel${index}a-content`}
@@ -111,7 +111,7 @@ const MenuView = () => {
               </AccordionSummary>
               <AccordionDetails>
                 {category.subCategories.map((subcategory, subIndex) => (
-                  <Accordion key={subIndex}>
+                  <Accordion key={subIndex} className='accordion-shadow'>
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls={`panel${index}-${subIndex}a-content`}

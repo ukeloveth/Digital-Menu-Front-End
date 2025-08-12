@@ -80,6 +80,9 @@ export const orderAPI = {
   },
   generateQrcode: async (data) =>{
     return apiClient.post("/qrcode",data)
+  },
+  registerPushNotificationDevice: async (data) =>{
+    return apiClient.post('/notifications/firebase/register-device',data)
   }
 };
 

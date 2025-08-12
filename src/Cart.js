@@ -56,7 +56,13 @@ const Cart = (props) => {
   const hasItems = cartItems && cartItems.length > 0;
 
   return (
-    <div className='cart'>
+    <div className='cart' style={{
+      position: 'sticky',
+      top: '20px',
+      maxHeight: 'calc(100vh - 40px)',
+      overflowY: 'auto',
+      zIndex: 1000
+    }}>
       <p className='cart-header'>Selected Meal (s)</p>
       <div className='cart-item-header'>
       <p className='cart-item-name'><b>Name</b></p>
