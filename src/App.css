@@ -43,7 +43,7 @@
   min-height: 95vh;
   height: max-content;
   padding: 1rem !important;
-  align-items: flex-end;
+  align-items: center;
 
 }
 .category-item{
@@ -93,11 +93,9 @@
   /* margin-right: 2rem !important; */
   margin-bottom: 2rem !important;
   background-color: white;
-  @media  screen and (max-width : 1024px) {
+  @media screen and (max-width : 1024px) {
     width: 92% !important;
-    
   }
-  
 }
 .view-order{
   width: 95%;
@@ -253,3 +251,299 @@
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
 }
 
+.enhanced-accordion {
+  margin-bottom: 16px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(109, 238, 126, 0.1) !important;
+}
+
+.enhanced-accordion .MuiAccordionSummary-root {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+  border-bottom: 1px solid rgba(109, 238, 126, 0.1) !important;
+}
+
+.sub-accordion {
+  margin-bottom: 8px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(109, 238, 126, 0.05) !important;
+}
+
+.sub-accordion .MuiAccordionSummary-root {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+}
+
+.enhanced-card {
+  width: 280px !important;
+  height: auto !important;
+  min-height: 120px !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  border: 1px solid rgba(109, 238, 126, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+}
+
+.enhanced-card:hover {
+  border-color: rgba(109, 238, 126, 0.3) !important;
+}
+
+.enhanced-card .MuiCardContent-root {
+  padding: 16px !important;
+}
+
+.enhanced-card .MuiChip-root {
+  box-shadow: 0 2px 8px rgba(109, 238, 126, 0.3) !important;
+}
+
+/* Responsive design improvements */
+@media screen and (max-width: 768px) {
+  .enhanced-card {
+    width: 100% !important;
+    max-width: 320px !important;
+  }
+  
+  .main-body {
+    padding: 0.5rem !important;
+  }
+  
+  .enhanced-accordion .MuiAccordionSummary-root,
+  .sub-accordion .MuiAccordionSummary-root {
+    padding: 8px 16px !important;
+  }
+  
+  .enhanced-accordion .MuiAccordionDetails-root,
+  .sub-accordion .MuiAccordionDetails-root {
+    padding: 12px 16px !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .enhanced-card {
+    margin: 8px 0 !important;
+  }
+  
+  .enhanced-accordion,
+  .sub-accordion {
+    margin-bottom: 12px !important;
+  }
+}
+
+/* Enhanced Cart Styles */
+.enhanced-cart {
+  width: 30rem !important;
+  min-height: 5rem !important;
+  height: max-content !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 1rem !important;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
+  justify-self: flex-end !important;
+  margin-bottom: 2rem !important;
+  background-color: white !important;
+  @media screen and (max-width : 1024px) {
+    width: 92% !important;
+  }
+}
+
+/* Enhanced Admin Container Styles */
+.enhanced-admin-container {
+  width: 50% !important;
+  min-height: 20vh !important;
+  height: max-content !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 1rem !important;
+  @media screen and (max-width : 1024px) {
+    width: 100% !important;
+  }
+}
+
+/* Enhanced Table Styles */
+.enhanced-table {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+
+.enhanced-table td,
+.enhanced-table th {
+  white-space: nowrap;
+}
+
+.enhanced-table .MuiTableHead-root {
+  background-color: rgba(109, 238, 126, 0.05) !important;
+}
+
+.enhanced-table .MuiTableRow-root:hover {
+  background-color: rgba(109, 238, 126, 0.05) !important;
+  transition: background-color 0.2s ease !important;
+}
+
+/* Enhanced Form Styles */
+.enhanced-form {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(109, 238, 126, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+
+.enhanced-form .MuiTextField-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(109, 238, 126, 0.3) !important;
+}
+
+.enhanced-form .MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #6dee7e !important;
+}
+
+/* Enhanced Button Styles */
+.enhanced-button {
+  background-color: #6dee7e !important;
+  color: white !important;
+  font-weight: 700 !important;
+  font-family: 'Raleway' !important;
+  border-radius: 8px !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.enhanced-button:hover {
+  background-color: #5dd86e !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(109, 238, 126, 0.3) !important;
+}
+
+.enhanced-button:disabled {
+  background-color: #bdc3c7 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Enhanced Card Styles */
+.enhanced-card-hover {
+  transition: all 0.3s ease !important;
+}
+
+.enhanced-card-hover:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+/* Enhanced Status Chip Styles */
+.status-chip-pending {
+  background-color: rgba(243, 156, 18, 0.2) !important;
+  color: #f39c12 !important;
+  border: 1px solid rgba(243, 156, 18, 0.4) !important;
+}
+
+.status-chip-completed {
+  background-color: rgba(39, 174, 96, 0.2) !important;
+  color: #27ae60 !important;
+  border: 1px solid rgba(39, 174, 96, 0.4) !important;
+}
+
+.status-chip-cancelled {
+  background-color: rgba(231, 76, 60, 0.2) !important;
+  color: #e74c3c !important;
+  border: 1px solid rgba(231, 76, 60, 0.4) !important;
+}
+
+/* Enhanced Notification Styles */
+.enhanced-notification {
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.enhanced-notification:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Enhanced Accordion Styles */
+.enhanced-accordion .MuiAccordionSummary-root:hover {
+  background-color: rgba(109, 238, 126, 0.05) !important;
+}
+
+.enhanced-accordion .MuiAccordionDetails-root {
+  padding: 16px 24px !important;
+}
+
+/* Enhanced Input Styles */
+.enhanced-input .MuiOutlinedInput-root {
+  border-radius: 8px !important;
+}
+
+.enhanced-input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(109, 238, 126, 0.3) !important;
+}
+
+.enhanced-input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #6dee7e !important;
+}
+
+/* Enhanced Menu Styles */
+.enhanced-menu .MuiMenuItem-root {
+  font-family: 'Raleway' !important;
+  font-weight: 500 !important;
+}
+
+.enhanced-menu .MuiMenuItem-root:hover {
+  background-color: rgba(109, 238, 126, 0.1) !important;
+}
+
+/* Responsive Enhancements */
+@media screen and (max-width: 768px) {
+  .enhanced-cart {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 1rem 0 !important;
+  }
+  
+  .enhanced-admin-container {
+    width: 95% !important;
+    padding: 0.5rem !important;
+  }
+  
+  .enhanced-form {
+    margin: 1rem 0 !important;
+  }
+  
+  .enhanced-button {
+    width: 100% !important;
+    margin: 0.5rem 0 !important;
+  }
+}
+@media screen and (max-width: 480px) {
+  .enhanced-cart,
+  .enhanced-admin-container {
+    padding: 0.5rem !important;
+  }
+  
+  .enhanced-table {
+    font-size: 0.875rem !important;
+  }
+  
+  .enhanced-form {
+    padding: 1rem !important;
+  }
+}
+
+/* Styles for iPad (landscape and portrait) */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .admin-top-section-container {
+    flex-direction: column !important;
+  }
+  .admin-container {
+    width: 100% !important;
+  }
+}
+
+/* Styles for mobile devices */
+@media only screen and (max-width: 767px) {
+  .admin-top-section-container {
+    flex-direction: column !important;
+  }
+  .admin-container {
+    width: 100% !important;
+  }
+}

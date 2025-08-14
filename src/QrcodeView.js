@@ -1,7 +1,27 @@
 import './App.css'
-import * as React from 'react';
-import { Button, TextField } from '@mui/material';
-import { MoreHorizOutlined } from '@mui/icons-material';
+import React, { useState, useEffect } from 'react';
+import { 
+  Button, 
+  TextField, 
+  Card, 
+  CardContent, 
+  Typography, 
+  Box, 
+  Chip, 
+  IconButton,
+  Alert,
+  Fade,
+  Zoom,
+  Skeleton
+} from '@mui/material';
+import { 
+  MoreHorizOutlined, 
+  QrCode2, 
+  TableRestaurant, 
+  AccessTime,
+  Print,
+  Add
+} from '@mui/icons-material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,39 +30,20 @@ import MenuItem from '@mui/material/MenuItem';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import {getTimeAgo} from './utils'
 import { orderAPI } from './api';
-// import printJS from 'print-js';
 import dayjs from 'dayjs';
 
-
 const QrcodeView = () => {
-    const [qrcodes, setQrcodes] = React.useState([]);
-    const [activeRow, setActiveRow] = React.useState(null);
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [error, setError] = React.useState(null);
-    const [loading, setLoading] = React.useState(false);
-    const [tableNumber, setTableNumber] = React.useState('')
-    // const [printData, setPrintData] = React.useState(null);
+    const [qrcodes, setQrcodes] = useState([]);
+    const [activeRow, setActiveRow] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [tableNumber, setTableNumber] = useState('')
     const open = Boolean(anchorEl);
 
-    // const handlePrint = () => {
-    //   if (printData) {
-    //     printJS({
-    //       printable: printData,
-    //       type: 'image',
-    //       style: `
-    //         @media print {
-    //           body { margin: 0; padding: 20px; text-align: center; }
-    //           img { max-width: 100%; height: auto; }
-    //         }
-    //       `
-    //     });
-    //   }
-    // };
-
-        const fetchQrcodeData = async () => {
+    const fetchQrcodeData = async () => {
       setLoading(true);
       setError(null);
       const data = { page: 0, size: 100 };
@@ -62,16 +63,15 @@ const QrcodeView = () => {
       } catch (err) {
         console.error("API Error:", err);
         console.error("API Error response:", err.response);
-        setError('Failed to fetch menus');
+        setError('Failed to fetch QR codes');
       } finally {
         setLoading(false);
       }
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
       fetchQrcodeData();
     }, [])
-
 
     function displayAndDownloadBase64Image(base64String, fileName = "image.png") {
       // ✅ Display image in the browser
@@ -92,7 +92,7 @@ const QrcodeView = () => {
       document.body.removeChild(link);
     }
 
-    const handleGenerateQrcode = async() =>{
+    const handleGenerateQrcode = async() => {
       setLoading(true);
       if (!tableNumber) {
         alert("Enter table number to proceed");
@@ -110,7 +110,7 @@ const QrcodeView = () => {
       catch (err) {
         console.error("API Error:", err);
         console.error("API Error response:", err.response);
-        setError(`Failed to  order`);
+        setError(`Failed to generate QR code`);
       } finally {
         setLoading(false);
       }
@@ -120,80 +120,275 @@ const QrcodeView = () => {
         setAnchorEl(event.currentTarget);
         setActiveRow(rowIndex);
       };
-      const handleChange = (event) => {
-        setTableNumber(event.target.value); // Get value from the TextField
+      
+    const handleChange = (event) => {
+        setTableNumber(event.target.value);
       };
       
-      const handleClose = () => {
+    const handleClose = () => {
         setAnchorEl(null);
         setActiveRow(null);
       };
+
+    const renderQRCodeForm = () => (
+      
+        <Card sx={{ 
+      borderRadius: 3,
+      border: '1px solid rgba(109, 238, 126, 0.1)',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+      overflow: 'hidden'
+    }}>
+      <CardContent sx={{ p: 0 }}>
+        <Box sx={{ 
+          p: 3, 
+          pb: 2,
+          borderBottom: '1px solid rgba(109, 238, 126, 0.1)',
+          backgroundColor: 'rgba(109, 238, 126, 0.02)'
+        }}>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              fontWeight: 700, 
+              fontFamily: 'Raleway',
+              color: '#2c3e50'
+            }}
+          >
+            
+                Generate Table QR Code
+              </Typography>
+            </Box>
+
+            {/* Form */}
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 3,
+              alignItems: { xs: 'stretch', md: 'center' }
+            }}>
+              <TextField 
+                fullWidth
+                label="Table Number" 
+                variant="outlined" 
+                onChange={handleChange} 
+                value={tableNumber}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(109, 238, 126, 0.3)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#6dee7e',
+                    },
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: '#6dee7e',
+                  },
+                }}
+                placeholder="Enter table number (e.g., 1, 2, 3...)"
+              />
+              
+              <Button 
+                onClick={handleGenerateQrcode}
+                variant="contained"
+                disabled={loading || !tableNumber.trim()}
+                sx={{
+                  backgroundColor: '#6dee7e',
+                  color: 'white',
+                  fontWeight: 700,
+                  fontFamily: 'Raleway',
+                  fontSize: '1rem',
+                  py: 1.5,
+                  px: 4,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  minWidth: { xs: '100%', md: 'auto' },
+                  '&:hover': {
+                    backgroundColor: '#5dd86e',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 8px 25px rgba(109, 238, 126, 0.3)',
+                  },
+                  '&:disabled': {
+                    backgroundColor: '#bdc3c7',
+                    transform: 'none',
+                    boxShadow: 'none',
+                  },
+                  transition: 'all 0.3s ease'
+                }}
+                startIcon={loading ? <Skeleton variant="circular" width={20} height={20} /> : <Add />}
+              >
+                {loading ? 'Generating...' : 'Generate QR Code'}
+              </Button>
+            </Box>
+
+            {/* Help Text */}
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                mt: 2, 
+                color: '#7f8c8d',
+                fontFamily: 'Raleway',
+                fontStyle: 'italic'
+              }}
+            >
+              Enter a table number to generate a unique QR code that customers can scan to view the menu.
+            </Typography>
+          </CardContent>
+        </Card>
+      
+    );
+
+    const renderQRCodeTable = () => (
+      <Card sx={{ 
+        borderRadius: 3,
+        border: '1px solid rgba(109, 238, 126, 0.1)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+        overflow: 'hidden',
+        width: '100% !important'
+      }}>
+        <CardContent sx={{ p: 0, width: '100% !important'}}>
+          {/* Table Header */}
+          <Box sx={{ 
+            p: 3, 
+            pb: 2,
+            borderBottom: '1px solid rgba(109, 238, 126, 0.1)',
+            backgroundColor: 'rgba(109, 238, 126, 0.02)'
+          }}>
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                fontWeight: 700, 
+                fontFamily: 'Raleway',
+                color: '#2c3e50'
+              }}
+            >
+              Generated QR Codes
+            </Typography>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#7f8c8d',
+                fontFamily: 'Raleway',
+                mt: 1
+              }}
+            >
+              {qrcodes.length} QR code{qrcodes.length !== 1 ? 's' : ''} generated
+            </Typography>
+          </Box>
+          
+          {/* Table */}
+          <TableContainer>
+            <Table sx={{ minWidth: '100%' }} aria-label="QR codes table">
+              <TableHead>
+                <TableRow sx={{ backgroundColor: 'rgba(109, 238, 126, 0.05)' }}>
+                  <TableCell sx={{ fontWeight: 700, fontFamily: 'Raleway' }}>Table</TableCell>
+                  <TableCell sx={{ fontWeight: 700, fontFamily: 'Raleway' }}>QR Code</TableCell>
+                  <TableCell sx={{ fontWeight: 700, fontFamily: 'Raleway' }}>Created</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 700, fontFamily: 'Raleway' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {qrcodes && qrcodes.map((qrcode, index) => (
+                  <TableRow
+                    key={`${qrcode.tableNumber}-${index}`}
+                    sx={{ 
+                      '&:hover': {
+                        backgroundColor: 'rgba(109, 238, 126, 0.05)',
+                      },
+                      transition: 'background-color 0.2s ease'
+                    }}
+                  >
+                    <TableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <TableRestaurant sx={{ color: '#6dee7e', fontSize: 20 }} />
+                        <Typography sx={{ fontFamily: 'Raleway', fontWeight: 600 }}>
+                           {qrcode.tableNumber}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <QrCode2 sx={{ color: '#6dee7e', fontSize: 20 }} />
+                        <Chip 
+                          label={`${qrcode.qrCodeBase64.substring(0, 12)}...`}
+                          size="small"
+                          sx={{ 
+                            backgroundColor: 'rgba(109, 238, 126, 0.1)',
+                            color: '#6dee7e',
+                            fontWeight: 600,
+                            fontFamily: 'monospace',
+                            fontSize: '0.7rem'
+                          }}
+                        />
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <AccessTime sx={{ color: '#6dee7e', fontSize: 16 }} />
+                        <Typography sx={{ fontFamily: 'Raleway' }}>
+                          {getTimeAgo(qrcode.createdAt)}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        id={`basic-button-${index}`}
+                        aria-controls={open && activeRow === index ? 'basic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open && activeRow === index ? 'true' : undefined}
+                        onClick={(event) => handleClick(event, index)}
+                        sx={{
+                          color: '#6dee7e',
+                          '&:hover': {
+                            backgroundColor: 'rgba(109, 238, 126, 0.1)',
+                          }
+                        }}
+                      >
+                        <MoreHorizOutlined />
+                      </IconButton>
+                      <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={open && activeRow === index}
+                        onClose={handleClose}
+                        MenuListProps={{
+                          'aria-labelledby': `basic-button-${index}`,
+                        }}
+                      >
+                        <MenuItem onClick={() => displayAndDownloadBase64Image(qrcode, `table-${qrcode.tableNumber}-qr.png`)}>
+                          <Print sx={{ mr: 1, color: '#6dee7e' }} />
+                          Print & Download
+                        </MenuItem>
+                      </Menu>
+                    </TableCell> 
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
+    );
+
     return (
         <div className='admin-container' style={{justifyContent:'flex-start', alignItems:'flex-start'}}>
-         <p className='cart-header'>Generate Table QR-Code</p>
-          <div className='admin-top-section-input-container' style={{padding: '2rem 0'}}>
-            <div className='section-input-container'>
-             <TextField style={{width:'90%'}} 
-             label='Table Number' variant='outlined' onChange={handleChange} value={tableNumber}></TextField>
-            </div>
-            <div className='section-input-container' style={{justifyContent:'flex-end'}}>
-            <Button 
-              onClick={handleGenerateQrcode}
-              variant='text' 
-              className='admin-top-section-input-btn'>
-              {loading ? 'Loading ...' : 'Generate'}
-            </Button>
-            </div>
-          </div>
-         
-
-     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Table Number</TableCell>
-            <TableCell align="left">code</TableCell>
-            <TableCell align="left">Created At</TableCell>
-            <TableCell align="right">
-              
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {qrcodes && qrcodes.map((order, index) => (
-            <TableRow
-              key={`${order.tableNumber}-${index}`}
+          {/* Error Display */}
+          {error && (
+            <Fade in={true}>
+              <Alert 
+                severity="error" 
+                sx={{ mb: 3, width: '100%' }}
+                onClose={() => setError(null)}
               >
-              <TableCell align="left">{order.tableNumber}</TableCell>
-              <TableCell align="left">{order.qrCodeBase64.substring(0,9)}</TableCell>
-              <TableCell align="left">{getTimeAgo(order.createdAt)}</TableCell>
-              
-              <TableCell align="right">
-              <Button
-                id={`basic-button-${index}`}
-                aria-controls={open && activeRow === index ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open && activeRow === index ? 'true' : undefined}
-                onClick={(event) => handleClick(event, index)}>
-                <MoreHorizOutlined />
-              </Button>
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open && activeRow === index}
-                onClose={handleClose}
-                MenuListProps={{
-                  'aria-labelledby': `basic-button-${index}`,
-                }}
-                >
-                <MenuItem onClick={()=>displayAndDownloadBase64Image(order,order.tableNumber+"-image.png")}>Print</MenuItem>
-              </Menu>
-              </TableCell> 
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                {error}
+              </Alert>
+            </Fade>
+          )}
+
+          {/* QR Code Generation Form */}
+          {renderQRCodeForm()}
+
+          {/* QR Codes Table */}
+          {renderQRCodeTable()}
         </div>
     )
 }
