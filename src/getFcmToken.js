@@ -3,12 +3,23 @@ import { getToken, onMessage } from "firebase/messaging";
 import { messaging } from "./firebase";
 
 export async function requestPermissionAndGetToken() {
-  if (!('Notification' in window)) throw new Error('This browser does not support notifications.');
+  console.log("Requesting notification permission...");
+  if (!('Notification' in window)) {
+    console.error('This browser does not support notifications.');
+    throw new Error('This browser does not support notifications.');
+  }
   const permission = await Notification.requestPermission();
-  if (permission !== 'granted') return null;
+  console.log("Notification permission:", permission);
+  if (permission !== 'granted') {
+    console.log("Permission not granted.");
+    return null;
+  }
 
   // register service worker (ensure path matches public/firebase-messaging-sw.js)
-  const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+  const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js').catch(error => {
+    console.error("Service worker registration failed:", error);
+    throw error; // Re-throw the error to prevent token retrieval
+  });
 
   // get token — pass VAPID key and serviceWorkerRegistration if you used a custom registration
   const currentToken = await getToken(messaging, {

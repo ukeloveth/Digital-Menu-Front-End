@@ -60,10 +60,12 @@ const AdminView = ()=>{
   
 
   const enableNotifications = async () => {
+    console.log("enableNotifications function called.");
     try {
       const fcmToken = await requestPermissionAndGetToken();
       if (fcmToken) {
-        let data = {}
+        console.log("FCM token received:", fcmToken);
+        let data = {};
         data.deviceId = fcmToken;
         data.token = fcmToken;
         await addPushNotificationDevice(data);
@@ -331,7 +333,6 @@ const AdminView = ()=>{
                 <Button 
                   variant="outlined"
                   onClick={enableNotifications}
-                  disabled={isSubmitting}
                   sx={{
                     borderColor: '#6dee7e',
                     color: '#6dee7e',
@@ -361,7 +362,6 @@ const AdminView = ()=>{
           <Button 
             variant="contained"
             onClick={enableNotifications}
-            disabled={isSubmitting}
             sx={{
               backgroundColor: '#6dee7e',
               color: 'white',

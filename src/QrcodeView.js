@@ -11,7 +11,6 @@ import {
   IconButton,
   Alert,
   Fade,
-  Zoom,
   Skeleton
 } from '@mui/material';
 import { 
@@ -136,9 +135,10 @@ const QrcodeView = () => {
       borderRadius: 3,
       border: '1px solid rgba(109, 238, 126, 0.1)',
       boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      marginBottom: '1rem'
     }}>
-      <CardContent sx={{ p: 0 }}>
+      <CardContent sx={{ p: '1rem' }}>
         <Box sx={{ 
           p: 3, 
           pb: 2,
@@ -151,9 +151,7 @@ const QrcodeView = () => {
               fontWeight: 700, 
               fontFamily: 'Raleway',
               color: '#2c3e50'
-            }}
-          >
-            
+            }}>
                 Generate Table QR Code
               </Typography>
             </Box>
@@ -321,7 +319,7 @@ const QrcodeView = () => {
                         />
                       </Box>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <AccessTime sx={{ color: '#6dee7e', fontSize: 16 }} />
                         <Typography sx={{ fontFamily: 'Raleway' }}>

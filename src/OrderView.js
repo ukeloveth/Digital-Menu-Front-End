@@ -453,7 +453,7 @@ const ViewOrder = () => {
                       }}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <AccessTime sx={{ color: '#6dee7e', fontSize: 16 }} />
                       <Typography sx={{ fontFamily: 'Raleway' }}>
