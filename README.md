@@ -1,4 +1,39 @@
-# Getting Started with Create React App
+# QR Code Food Delivery App
+
+A React-based food delivery application with QR code functionality and push notifications.
+
+## Firebase Configuration
+
+This app uses Firebase for push notifications. You need to set up the following environment variables:
+
+### Required Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```bash
+# Firebase Configuration
+REACT_APP_FIREBASE_API_KEY=your_firebase_api_key_here
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+
+# Firebase VAPID Key (Required for push notifications)
+# Get this from Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
+REACT_APP_FIREBASE_VAPID_KEY=your_vapid_key_here
+```
+
+### How to Get Firebase VAPID Key
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your project
+3. Go to Project Settings (gear icon)
+4. Click on "Cloud Messaging" tab
+5. Scroll down to "Web Push certificates"
+6. Generate a new key pair if you don't have one
+7. Copy the "Key pair" value - this is your VAPID key
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -68,3 +103,40 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Push Notification Troubleshooting
+
+### Common Issues and Solutions
+
+1. **"This browser does not support notifications"**
+   - Make sure you're using a modern browser (Chrome, Firefox, Safari, Edge)
+   - Ensure the site is served over HTTPS (required for notifications)
+
+2. **"Service worker registration failed"**
+   - Check that `public/firebase-messaging-sw.js` exists
+   - Verify the service worker path in `getFcmToken.js`
+   - Clear browser cache and reload
+
+3. **"No registration token available"**
+   - Ensure you have the correct VAPID key in your `.env` file
+   - Check that Firebase project settings match your environment variables
+   - Verify notification permissions are granted
+
+4. **Notifications not showing**
+   - Check browser console for errors
+   - Use the "Test FCM Setup" button in AdminView to debug
+   - Verify service worker is active in browser dev tools
+
+### Testing Push Notifications
+
+1. Use the "Test FCM Setup" button in the AdminView to verify configuration
+2. Check browser console for detailed logs
+3. Verify service worker registration in browser dev tools > Application > Service Workers
+4. Test with a simple notification payload from your backend
+
+### Browser Compatibility
+
+- **Chrome**: Full support
+- **Firefox**: Full support  
+- **Safari**: Limited support (requires user interaction)
+- **Edge**: Full support

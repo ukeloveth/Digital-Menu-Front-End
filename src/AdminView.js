@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import OrderView from './OrderView';
 import QrcodeView from './QrcodeView'
-import { requestPermissionAndGetToken, listenForForegroundMessages } from "./getFcmToken";
+import { requestPermissionAndGetToken, listenForForegroundMessages, testFCMSetup } from "./getFcmToken";
 import { 
   Button, 
   Card, 
@@ -345,6 +345,31 @@ const AdminView = ()=>{
                   }}
                 >
                   {isSubmitting ? 'Please wait...' : 'Enable Push Notifications'}
+                </Button>
+                
+                <Button 
+                  variant="outlined"
+                  onClick={async () => {
+                    const result = await testFCMSetup();
+                    if (result) {
+                      alert('FCM setup test successful! Check console for details.');
+                    } else {
+                      alert('FCM setup test failed! Check console for details.');
+                    }
+                  }}
+                  sx={{
+                    borderColor: '#3498db',
+                    color: '#3498db',
+                    fontWeight: 600,
+                    fontFamily: 'Raleway',
+                    ml: 2,
+                    '&:hover': {
+                      borderColor: '#2980b9',
+                      backgroundColor: 'rgba(52, 152, 219, 0.05)',
+                    }
+                  }}
+                >
+                  Test FCM Setup
                 </Button>
               </Box>
             </Fade>
