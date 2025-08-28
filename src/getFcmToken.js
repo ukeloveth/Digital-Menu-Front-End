@@ -16,7 +16,7 @@ export async function requestPermissionAndGetToken() {
   }
 
   // register service worker (ensure path matches public/firebase-messaging-sw.js)
-  const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js').catch(error => {
+  const registration = await navigator.serviceWorker.register('firebase.js').catch(error => {
     console.error("Service worker registration failed:", error);
     throw error; // Re-throw the error to prevent token retrieval
   });
