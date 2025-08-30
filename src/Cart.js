@@ -18,7 +18,7 @@ import {
   Delete, 
   ShoppingCart, 
   Receipt, 
-  CheckCircle 
+  CheckCircle
 } from '@mui/icons-material';
 import { formatPrice } from './utils';
 import { orderAPI } from './api';

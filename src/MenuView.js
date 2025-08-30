@@ -40,6 +40,7 @@ const MenuView = () => {
         setLoading(false);
       }
     };
+
     // Call the function when component mounts
     fetchMenuData();
   }, []);

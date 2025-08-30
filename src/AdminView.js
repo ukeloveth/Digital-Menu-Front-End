@@ -371,6 +371,59 @@ const AdminView = ()=>{
                 >
                   Test FCM Setup
                 </Button>
+                
+                <Button 
+                  variant="outlined"
+                  onClick={() => {
+                    // Simulate receiving a new order notification
+                    const mockPayload = {
+                      notification: {
+                        title: 'New Order Received!',
+                        body: 'Table 5 has placed an order for £24.50'
+                      },
+                      data: {
+                        orderId: 'test-123',
+                        tableNumber: '5',
+                        totalAmount: '24.50'
+                      }
+                    };
+                    
+                    // Trigger the notification handler
+                    const newNotification = {
+                      id: Date.now(),
+                      title: mockPayload.notification.title,
+                      body: mockPayload.notification.body,
+                      timestamp: new Date().toLocaleTimeString(),
+                      data: mockPayload.data,
+                      read: false
+                    };
+                    
+                    setNotifications(prev => [newNotification, ...prev]);
+                    
+                    // Also show browser notification if permission granted
+                    if (Notification.permission === 'granted') {
+                      new Notification(mockPayload.notification.title, {
+                        body: mockPayload.notification.body,
+                        icon: '/logo192.png',
+                      });
+                    }
+                    
+                    alert('Test notification sent! Check the notifications list above.');
+                  }}
+                  sx={{
+                    borderColor: '#e74c3c',
+                    color: '#e74c3c',
+                    fontWeight: 600,
+                    fontFamily: 'Raleway',
+                    ml: 2,
+                    '&:hover': {
+                      borderColor: '#c0392b',
+                      backgroundColor: 'rgba(231, 76, 60, 0.05)',
+                    }
+                  }}
+                >
+                  Test New Order Notification
+                </Button>
               </Box>
             </Fade>
           ) : (
