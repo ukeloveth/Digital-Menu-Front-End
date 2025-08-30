@@ -3,8 +3,8 @@
 // Note: Service workers have limitations with ES modules, so we use the compat version
 // but with modern Firebase v9+ configuration
 
-importScripts("https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging.js");
+importScripts("https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging-compat.js");
 
 // Initialize Firebase in the service worker with v9+ compatible config
 firebase.initializeApp({
