@@ -33,9 +33,34 @@
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "9814adb8-df1e-48f2-8fb6-918300827d86",
-    });
+    try {
+      // Check if service workers are supported
+      if ('serviceWorker' in navigator) {
+        // Unregister any existing service workers to prevent conflicts
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (let registration of registrations) {
+          if (registration.active && registration.active.scriptURL.includes('firebase-messaging-sw.js')) {
+            await registration.unregister();
+          }
+        }
+      }
+
+      await OneSignal.init({
+        appId: "9814adb8-df1e-48f2-8fb6-918300827d86",
+        serviceWorkerPath: "/OneSignalSDKWorker.js",
+        serviceWorkerParam: { scope: "/" },
+        allowLocalhostAsSecureOrigin: true,
+        notifyButton: {
+          enable: true,
+        },
+        autoRegister: true,
+        autoResubscribe: true,
+      });
+
+      console.log('OneSignal initialized successfully');
+    } catch (error) {
+      console.error('OneSignal initialization failed:', error);
+    }
   });
 </script>
   </head>
