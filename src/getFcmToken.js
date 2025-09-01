@@ -42,12 +42,16 @@ export async function requestPermissionAndGetToken() {
 
 // foreground handler
 export function listenForForegroundMessages(callback) {
+  console.log('getFcmToken: Setting up foreground message listener...');
+  
   onMessage(messaging, (payload) => {
-    console.log("Foreground message received:", payload);
+    console.log("getFcmToken: Foreground message received:", payload);
     
     // Display notification for foreground messages
     if (payload.notification) {
       const { title, body, icon } = payload.notification;
+      
+      console.log('getFcmToken: Creating browser notification with:', { title, body, icon });
       
       // Create and show notification
       const notification = new Notification(title || 'New Message', {
@@ -60,7 +64,7 @@ export function listenForForegroundMessages(callback) {
 
       // Optional: Handle notification click
       notification.onclick = () => {
-        console.log("Notification clicked:", payload);
+        console.log("getFcmToken: Notification clicked:", payload);
         // You can add custom logic here (e.g., navigate to a specific page)
         window.focus();
         notification.close();
@@ -74,9 +78,14 @@ export function listenForForegroundMessages(callback) {
 
     // Call the callback if provided
     if (callback && typeof callback === 'function') {
+      console.log('getFcmToken: Calling callback with payload:', payload);
       callback(payload);
+    } else {
+      console.log('getFcmToken: No callback provided');
     }
   });
+  
+  console.log('getFcmToken: Foreground message listener set up successfully');
 }
 
 // Test function to verify FCM setup

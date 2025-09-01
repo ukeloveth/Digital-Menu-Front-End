@@ -34,9 +34,11 @@ const AdminView = ()=>{
 
   // Listen for incoming push notifications
   useEffect(() => {
+    console.log('AdminView: Setting up notification listener...');
+    
     // Call your listener and store the unsubscribe function it returns
     const unsubscribe = listenForForegroundMessages((payload) => {
-      console.log('Received foreground message:', payload);
+      console.log('AdminView: Received foreground message:', payload);
   
       const newNotification = {
         id: Date.now(),
@@ -47,8 +49,11 @@ const AdminView = ()=>{
         read: false
       };
   
+      console.log('AdminView: Adding new notification:', newNotification);
       setNotifications(prev => [newNotification, ...prev]);
     });
+  
+    console.log('AdminView: Notification listener set up successfully');
   
     // Return unsubscribe in the cleanup function
     return () => {

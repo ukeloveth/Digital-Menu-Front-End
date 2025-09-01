@@ -47,4 +47,33 @@
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js"></script>
 
+
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "9814adb8-df1e-48f2-8fb6-918300827d86",
+    });
+
+    OneSignal.on('subscriptionChange', function (isSubscribed) {
+      if (isSubscribed) {
+        OneSignal.getUserId().then(function(playerId) {
+          console.log("OneSignal Player ID:", playerId);
+
+          // Send this playerId to your Spring Boot backend
+          fetch("https//:qr-code-api-server-production.up.railway.app/onesignal/devices/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ deviceId: "WEB", playerId: playerId })
+          });
+        });
+      }
+    });
+  });
+</script>
+
+
 </html>

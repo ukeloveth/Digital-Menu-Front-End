@@ -54,12 +54,20 @@ const Cart = (props) => {
         status: 'pending'
       };
       console.log(orderData, "Order data");
+      console.log('Cart: Submitting order...', orderData);
       const response = await orderAPI.submitOrder(orderData);
+      console.log('Cart: Order submission response:', response);
 
       if (response.status === 200 || response.status === 201) {
         alert("Order submitted successfully!");
         props.clearCart();
-        console.log('Order submitted:', response.data);
+        console.log('Cart: Order submitted successfully:', response.data);
+        
+        // Wait a moment for server to process and send notification
+        console.log('Cart: Waiting for server to send notification...');
+        setTimeout(() => {
+          console.log('Cart: Check AdminView for notifications now');
+        }, 2000);
       }
     } catch (error) {
       console.error('Error submitting order:', error);
