@@ -54,23 +54,49 @@
   OneSignal.push(function() {
     OneSignal.init({
       appId: "9814adb8-df1e-48f2-8fb6-918300827d86",
+      allowLocalhostAsSecureOrigin: true,
+      notifyButton: {
+        enable: false,
+      },
+      autoRegister: true,
+      autoResubscribe: true,
     });
 
     OneSignal.on('subscriptionChange', function (isSubscribed) {
+      console.log("OneSignal subscription changed:", isSubscribed);
       if (isSubscribed) {
         OneSignal.getUserId().then(function(playerId) {
           console.log("OneSignal Player ID:", playerId);
 
           // Send this playerId to your Spring Boot backend
-          fetch("https//:qr-code-api-server-production.up.railway.app/onesignal/devices/register", {
+          fetch("https://qr-code-api-server-production.up.railway.app/onesignal/devices/register", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({ deviceId: "WEB", playerId: playerId })
-          });
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => console.log("Device registered successfully:", data))
+          .catch(error => console.error("Error registering device:", error));
+        }).catch(function(error) {
+          console.error("Error getting OneSignal User ID:", error);
         });
       }
+    });
+
+    // Add error handling for OneSignal initialization
+    OneSignal.on('initialization', function(isInitialized) {
+      console.log("OneSignal initialized:", isInitialized);
+    });
+
+    OneSignal.on('notificationPermissionChange', function(permission) {
+      console.log("Notification permission changed:", permission);
     });
   });
 </script>
