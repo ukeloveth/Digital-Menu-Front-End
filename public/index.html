@@ -48,19 +48,78 @@
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js"></script>
 
 
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 <script>
-  window.OneSignal = window.OneSignal || [];
-  OneSignal.push(function() {
-    OneSignal.init({
-      appId: "9814adb8-df1e-48f2-8fb6-918300827d86",
-      allowLocalhostAsSecureOrigin: true,
-      notifyButton: {
-        enable: false,
-      },
-      autoRegister: true,
-      autoResubscribe: true,
+  // Load OneSignal with fallback
+  function loadOneSignal() {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.onesignal.com/sdks/OneSignalSDK.js';
+    script.async = true;
+    script.onerror = function() {
+      console.warn('OneSignal SDK failed to load, trying alternative method');
+      // Fallback: try loading from a different CDN or handle gracefully
+    };
+    document.head.appendChild(script);
+  }
+
+  // Initialize OneSignal with error handling
+  function initOneSignal() {
+    if (typeof OneSignal === 'undefined') {
+      console.warn('OneSignal not available, retrying in 2 seconds...');
+      setTimeout(initOneSignal, 2000);
+      return;
+    }
+
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+      try {
+        OneSignal.init({
+          appId: "9814adb8-df1e-48f2-8fb6-918300827d86",
+          allowLocalhostAsSecureOrigin: true,
+          notifyButton: {
+            enable: false,
+          },
+          autoRegister: true,
+          autoResubscribe: true,
+          // Add these options to reduce blocking
+          welcomeNotification: {
+            disable: true
+          },
+          promptOptions: {
+            slidedown: {
+              prompts: [
+                {
+                  type: "push",
+                  autoPrompt: true,
+                  text: {
+                    actionMessage: "We'd like to show you notifications for the latest updates.",
+                    acceptButton: "Allow",
+                    cancelButton: "Not now"
+                  },
+                  delay: {
+                    pageViews: 1,
+                    timeDelay: 20
+                  }
+                }
+              ]
+            }
+          }
+        });
+      } catch (error) {
+        console.error('OneSignal initialization failed:', error);
+      }
     });
+  }
+
+  // Start loading process
+  loadOneSignal();
+  setTimeout(initOneSignal, 1000);
+
+  // Event handlers will be set up after OneSignal is initialized
+  function setupEventHandlers() {
+    if (typeof OneSignal === 'undefined') {
+      setTimeout(setupEventHandlers, 1000);
+      return;
+    }
 
     OneSignal.on('subscriptionChange', function (isSubscribed) {
       console.log("OneSignal subscription changed:", isSubscribed);
@@ -98,7 +157,10 @@
     OneSignal.on('notificationPermissionChange', function(permission) {
       console.log("Notification permission changed:", permission);
     });
-  });
+  }
+
+  // Start setting up event handlers
+  setTimeout(setupEventHandlers, 2000);
 </script>
 
 
