@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import OrderView from './OrderView';
 import QrcodeView from './QrcodeView'
 import { requestPermissionAndGetToken, listenForForegroundMessages, testFCMSetup } from "./getFcmToken";
+import oneSignalService from "./oneSignalService";
 import { 
   Button, 
   Card, 
@@ -35,6 +36,32 @@ const AdminView = ()=>{
   // Listen for incoming push notifications
   useEffect(() => {
     console.log('AdminView: Setting up notification listener...');
+    
+    // Initialize OneSignal and set up listeners
+    const initializeOneSignal = async () => {
+      try {
+        await oneSignalService.initialize();
+        oneSignalService.setupNotificationListeners((notificationData) => {
+          console.log('AdminView: Received OneSignal notification:', notificationData);
+          
+          const newNotification = {
+            id: Date.now(),
+            title: notificationData.data?.title || 'New Notification',
+            body: notificationData.data?.body || 'You have a new message',
+            timestamp: new Date().toLocaleTimeString(),
+            data: notificationData.data || {},
+            read: false
+          };
+          
+          console.log('AdminView: Adding new OneSignal notification:', newNotification);
+          setNotifications(prev => [newNotification, ...prev]);
+        });
+      } catch (error) {
+        console.error('AdminView: Error setting up OneSignal:', error);
+      }
+    };
+
+    initializeOneSignal();
     
     // Call your listener and store the unsubscribe function it returns
     const unsubscribe = listenForForegroundMessages((payload) => {
@@ -335,7 +362,7 @@ const AdminView = ()=>{
                 <Typography variant="body2" sx={{ fontFamily: 'Raleway', mb: 3 }}>
                   Enable push notifications to start receiving messages.
                 </Typography>
-                <Button 
+                {/* <Button 
                   variant="outlined"
                   onClick={enableNotifications}
                   sx={{
@@ -350,9 +377,9 @@ const AdminView = ()=>{
                   }}
                 >
                   {isSubmitting ? 'Please wait...' : 'Enable Push Notifications'}
-                </Button>
+                </Button> */}
                 
-                <Button 
+                {/* <Button 
                   variant="outlined"
                   onClick={async () => {
                     const result = await testFCMSetup();
@@ -375,9 +402,9 @@ const AdminView = ()=>{
                   }}
                 >
                   Test FCM Setup
-                </Button>
+                </Button> */}
                 
-                <Button 
+                {/* <Button 
                   variant="outlined"
                   onClick={() => {
                     // Simulate receiving a new order notification
@@ -428,7 +455,7 @@ const AdminView = ()=>{
                   }}
                 >
                   Test New Order Notification
-                </Button>
+                </Button> */}
               </Box>
             </Fade>
           ) : (
