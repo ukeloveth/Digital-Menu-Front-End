@@ -36,13 +36,7 @@
     try {
       // Check if service workers are supported
       if ('serviceWorker' in navigator) {
-        // Unregister any existing service workers to prevent conflicts
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (let registration of registrations) {
-          if (registration.active && registration.active.scriptURL.includes('firebase-messaging-sw.js')) {
-            await registration.unregister();
-          }
-        }
+        console.log('Service workers are supported');
       }
 
       await OneSignal.init({
@@ -78,8 +72,5 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js"></script>
 
 </html>

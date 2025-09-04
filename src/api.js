@@ -82,7 +82,7 @@ export const orderAPI = {
     return apiClient.post("/qrcode",data)
   },
   registerPushNotificationDevice: async (data) =>{
-    return apiClient.post('/v1/firebase/register-device',data)
+    return apiClient.post('/v1/onesignal/register-device',data)
   }
 };
 

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 
 import OrderView from './OrderView';
 import QrcodeView from './QrcodeView'
-import { requestPermissionAndGetToken, listenForForegroundMessages, testFCMSetup } from "./getFcmToken";
 import oneSignalService from "./oneSignalService";
 import { 
   Button, 
@@ -62,51 +61,37 @@ const AdminView = ()=>{
     };
 
     initializeOneSignal();
-    
-    // Call your listener and store the unsubscribe function it returns
-    const unsubscribe = listenForForegroundMessages((payload) => {
-      console.log('AdminView: Received foreground message:', payload);
-  
-      const newNotification = {
-        id: Date.now(),
-        title: payload.notification?.title || 'New Notification',
-        body: payload.notification?.body || 'You have a new message',
-        timestamp: new Date().toLocaleTimeString(),
-        data: payload.data || {},
-        read: false
-      };
-  
-      console.log('AdminView: Adding new notification:', newNotification);
-      setNotifications(prev => [newNotification, ...prev]);
-    });
   
     console.log('AdminView: Notification listener set up successfully');
-  
-    // Return unsubscribe in the cleanup function
-    return () => {
-      if (typeof unsubscribe === 'function') {
-        unsubscribe();
-      }
-    };
   }, []);
   
 
   const enableNotifications = async () => {
     console.log("enableNotifications function called.");
     try {
-      const fcmToken = await requestPermissionAndGetToken();
-      if (fcmToken) {
-        console.log("FCM token received:", fcmToken);
+      // Initialize OneSignal if not already done
+      const initialized = await oneSignalService.initialize();
+      if (!initialized) {
+        console.error("Failed to initialize OneSignal");
+        return;
+      }
+
+      // Get player ID
+      const playerId = await oneSignalService.getPlayerId();
+      if (playerId) {
+        console.log("OneSignal Player ID:", playerId);
+        
+        // Store player ID for server-side notifications
         let data = {};
-        data.deviceId = fcmToken;
-        data.token = fcmToken;
+        data.deviceId = playerId;
+        data.token = playerId;
         await addPushNotificationDevice(data);
-        console.log("FCM Token:", fcmToken);
+        console.log("OneSignal Player ID stored:", playerId);
       } else {
-        console.log("Permission not granted or no token received.");
+        console.log("OneSignal Player ID not available");
       }
     } catch (err) {
-      console.error("Error getting token", err);
+      console.error("Error with OneSignal setup", err);
     }
   };
 
@@ -379,30 +364,7 @@ const AdminView = ()=>{
                   {isSubmitting ? 'Please wait...' : 'Enable Push Notifications'}
                 </Button> */}
                 
-                {/* <Button 
-                  variant="outlined"
-                  onClick={async () => {
-                    const result = await testFCMSetup();
-                    if (result) {
-                      alert('FCM setup test successful! Check console for details.');
-                    } else {
-                      alert('FCM setup test failed! Check console for details.');
-                    }
-                  }}
-                  sx={{
-                    borderColor: '#3498db',
-                    color: '#3498db',
-                    fontWeight: 600,
-                    fontFamily: 'Raleway',
-                    ml: 2,
-                    '&:hover': {
-                      borderColor: '#2980b9',
-                      backgroundColor: 'rgba(52, 152, 219, 0.05)',
-                    }
-                  }}
-                >
-                  Test FCM Setup
-                </Button> */}
+                {/*  */}
                 
                 {/* <Button 
                   variant="outlined"
