@@ -10,6 +10,11 @@ class OneSignalService {
     try {
       if (this.isInitialized) {
         console.log('OneSignal already ready');
+        // Still try to get playerId in case it wasn't set before
+        if (!this.playerId) {
+          this.playerId = await this.getPlayerId();
+          console.log('OneSignal Player ID (retrieved on ready check):', this.playerId);
+        }
         return true;
       }
 
@@ -25,8 +30,8 @@ class OneSignalService {
       this.isInitialized = true;
       console.log('OneSignal is ready');
 
-      // Get player ID
-      this.playerId = await this.getPlayerId();
+      // Get player ID with retry logic
+      this.playerId = await this.getPlayerIdWithRetry();
       console.log('OneSignal Player ID:', this.playerId);
 
       return true;
@@ -69,8 +74,9 @@ class OneSignalService {
   // Get player ID
   async getPlayerId() {
     try {
-      if (!this.isInitialized) {
-        console.log('OneSignal not initialized');
+      // Check if OneSignal is available
+      if (typeof window.OneSignal === 'undefined') {
+        console.log('OneSignal not loaded yet');
         return null;
       }
 
@@ -81,11 +87,52 @@ class OneSignalService {
       }
 
       const playerId = await window.OneSignal.getUserId();
+      console.log('Retrieved player ID:', playerId);
+      
+      // Update the instance playerId if we got a valid one
+      if (playerId) {
+        this.playerId = playerId;
+      }
+      
       return playerId;
     } catch (error) {
       console.error('Error getting player ID:', error);
       return null;
     }
+  }
+
+  // Get player ID with retry logic
+  async getPlayerIdWithRetry(maxRetries = 3, delay = 1000) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      console.log(`Attempting to get player ID (attempt ${attempt}/${maxRetries})`);
+      
+      const playerId = await this.getPlayerId();
+      if (playerId) {
+        console.log(`Successfully retrieved player ID on attempt ${attempt}:`, playerId);
+        return playerId;
+      }
+      
+      if (attempt < maxRetries) {
+        console.log(`Player ID not available, retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 1.5; // Exponential backoff
+      }
+    }
+    
+    console.warn(`Failed to retrieve player ID after ${maxRetries} attempts`);
+    return null;
+  }
+
+  // Manually refresh player ID
+  async refreshPlayerId() {
+    console.log('Manually refreshing player ID...');
+    this.playerId = await this.getPlayerIdWithRetry();
+    return this.playerId;
+  }
+
+  // Get current player ID (synchronous)
+  getCurrentPlayerId() {
+    return this.playerId;
   }
 
   // Set up notification event listeners

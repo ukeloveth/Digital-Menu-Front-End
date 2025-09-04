@@ -90,9 +90,8 @@ const AdminView = ()=>{
       // Get player ID with retry
       let playerId = await oneSignalService.getPlayerId();
       if (!playerId) {
-        console.log("Player ID not available immediately, retrying in 2 seconds...");
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        playerId = await oneSignalService.getPlayerId();
+        console.log("Player ID not available immediately, trying refresh method...");
+        playerId = await oneSignalService.refreshPlayerId();
       }
       
       if (playerId) {
