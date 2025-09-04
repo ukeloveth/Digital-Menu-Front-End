@@ -5,11 +5,11 @@ class OneSignalService {
     this.playerId = null;
   }
 
-  // Initialize OneSignal
-  async initialize() {
+  // Wait for OneSignal to be ready (already initialized in HTML)
+  async waitForReady() {
     try {
       if (this.isInitialized) {
-        console.log('OneSignal already initialized');
+        console.log('OneSignal already ready');
         return true;
       }
 
@@ -19,18 +19,11 @@ class OneSignalService {
         await this.waitForOneSignal();
       }
 
-      // Initialize OneSignal
-      await window.OneSignal.init({
-        appId: "9814adb8-df1e-48f2-8fb6-918300827d86",
-        serviceWorkerPath: "/OneSignalSDKWorker.js",
-        serviceWorkerParam: { scope: "/" },
-        allowLocalhostAsSecureOrigin: true,
-        autoRegister: true,
-        autoResubscribe: true,
-      });
+      // Wait a bit more for OneSignal to be fully ready
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       this.isInitialized = true;
-      console.log('OneSignal initialized successfully');
+      console.log('OneSignal is ready');
 
       // Get player ID
       this.playerId = await this.getPlayerId();
@@ -38,7 +31,7 @@ class OneSignalService {
 
       return true;
     } catch (error) {
-      console.error('OneSignal initialization failed:', error);
+      console.error('OneSignal ready check failed:', error);
       return false;
     }
   }
@@ -81,9 +74,9 @@ class OneSignalService {
         return;
       }
 
-      // Listen for notification received
+      // Listen for notification received (foreground)
       window.OneSignal.on('notificationDisplay', (event) => {
-        console.log('OneSignal notification received:', event);
+        console.log('OneSignal notification received (foreground):', event);
         if (callback && typeof callback === 'function') {
           callback({
             type: 'notification',
@@ -102,6 +95,41 @@ class OneSignalService {
             data: event,
             timestamp: new Date().toISOString()
           });
+        }
+      });
+
+      // Listen for subscription change
+      window.OneSignal.on('subscriptionChange', (isSubscribed) => {
+        console.log('OneSignal subscription changed:', isSubscribed);
+        if (callback && typeof callback === 'function') {
+          callback({
+            type: 'subscription',
+            data: { isSubscribed },
+            timestamp: new Date().toISOString()
+          });
+        }
+      });
+
+      // Also listen for custom events that might be sent from the service worker
+      window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'ONESIGNAL_NOTIFICATION') {
+          console.log('OneSignal notification received via message:', event.data);
+          if (callback && typeof callback === 'function') {
+            callback({
+              type: 'notification',
+              data: event.data.payload,
+              timestamp: new Date().toISOString()
+            });
+          }
+        } else if (event.data && event.data.type === 'ONESIGNAL_NOTIFICATION_CLICK') {
+          console.log('OneSignal notification clicked via message:', event.data);
+          if (callback && typeof callback === 'function') {
+            callback({
+              type: 'click',
+              data: event.data.payload,
+              timestamp: new Date().toISOString()
+            });
+          }
         }
       });
 

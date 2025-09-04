@@ -36,17 +36,17 @@ const AdminView = ()=>{
   useEffect(() => {
     console.log('AdminView: Setting up notification listener...');
     
-    // Initialize OneSignal and set up listeners
+    // Wait for OneSignal to be ready and set up listeners
     const initializeOneSignal = async () => {
       try {
-        await oneSignalService.initialize();
+        await oneSignalService.waitForReady();
         oneSignalService.setupNotificationListeners((notificationData) => {
           console.log('AdminView: Received OneSignal notification:', notificationData);
           
           const newNotification = {
             id: Date.now(),
-            title: notificationData.data?.title || 'New Notification',
-            body: notificationData.data?.body || 'You have a new message',
+            title: notificationData.data?.title || notificationData.data?.heading || 'New Notification',
+            body: notificationData.data?.body || notificationData.data?.content || 'You have a new message',
             timestamp: new Date().toLocaleTimeString(),
             data: notificationData.data || {},
             read: false
@@ -69,10 +69,10 @@ const AdminView = ()=>{
   const enableNotifications = async () => {
     console.log("enableNotifications function called.");
     try {
-      // Initialize OneSignal if not already done
-      const initialized = await oneSignalService.initialize();
-      if (!initialized) {
-        console.error("Failed to initialize OneSignal");
+      // Wait for OneSignal to be ready
+      const ready = await oneSignalService.waitForReady();
+      if (!ready) {
+        console.error("OneSignal not ready");
         return;
       }
 
@@ -347,7 +347,7 @@ const AdminView = ()=>{
                 <Typography variant="body2" sx={{ fontFamily: 'Raleway', mb: 3 }}>
                   Enable push notifications to start receiving messages.
                 </Typography>
-                {/* <Button 
+                <Button 
                   variant="outlined"
                   onClick={enableNotifications}
                   sx={{
@@ -362,19 +362,17 @@ const AdminView = ()=>{
                   }}
                 >
                   {isSubmitting ? 'Please wait...' : 'Enable Push Notifications'}
-                </Button> */}
+                </Button>
                 
-                {/*  */}
-                
-                {/* <Button 
+                <Button 
                   variant="outlined"
                   onClick={() => {
                     // Simulate receiving a new order notification
-                    const mockPayload = {
-                      notification: {
-                        title: 'New Order Received!',
-                        body: 'Table 5 has placed an order for £24.50'
-                      },
+                    const mockNotification = {
+                      id: Date.now(),
+                      title: 'Test Order Received!',
+                      body: 'Table 5 has placed an order for £24.50',
+                      timestamp: new Date().toLocaleTimeString(),
                       data: {
                         orderId: 'test-123',
                         tableNumber: '5',
@@ -382,22 +380,13 @@ const AdminView = ()=>{
                       }
                     };
                     
-                    // Trigger the notification handler
-                    const newNotification = {
-                      id: Date.now(),
-                      title: mockPayload.notification.title,
-                      body: mockPayload.notification.body,
-                      timestamp: new Date().toLocaleTimeString(),
-                      data: mockPayload.data,
-                      read: false
-                    };
-                    
-                    setNotifications(prev => [newNotification, ...prev]);
+                    // Add the test notification to the list
+                    setNotifications(prev => [mockNotification, ...prev]);
                     
                     // Also show browser notification if permission granted
                     if (Notification.permission === 'granted') {
-                      new Notification(mockPayload.notification.title, {
-                        body: mockPayload.notification.body,
+                      new Notification(mockNotification.title, {
+                        body: mockNotification.body,
                         icon: '/logo192.png',
                       });
                     }
@@ -417,7 +406,7 @@ const AdminView = ()=>{
                   }}
                 >
                   Test New Order Notification
-                </Button> */}
+                </Button>
               </Box>
             </Fade>
           ) : (
