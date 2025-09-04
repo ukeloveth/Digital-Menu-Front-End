@@ -39,7 +39,16 @@ const AdminView = ()=>{
     // Wait for OneSignal to be ready and set up listeners
     const initializeOneSignal = async () => {
       try {
-        await oneSignalService.waitForReady();
+        console.log('AdminView: Waiting for OneSignal to be ready...');
+        const ready = await oneSignalService.waitForReady();
+        
+        if (!ready) {
+          console.error('AdminView: OneSignal not ready, retrying in 3 seconds...');
+          setTimeout(initializeOneSignal, 3000);
+          return;
+        }
+
+        console.log('AdminView: OneSignal is ready, setting up listeners...');
         oneSignalService.setupNotificationListeners((notificationData) => {
           console.log('AdminView: Received OneSignal notification:', notificationData);
           
@@ -57,6 +66,8 @@ const AdminView = ()=>{
         });
       } catch (error) {
         console.error('AdminView: Error setting up OneSignal:', error);
+        // Retry after 3 seconds
+        setTimeout(initializeOneSignal, 3000);
       }
     };
 
@@ -76,8 +87,14 @@ const AdminView = ()=>{
         return;
       }
 
-      // Get player ID
-      const playerId = await oneSignalService.getPlayerId();
+      // Get player ID with retry
+      let playerId = await oneSignalService.getPlayerId();
+      if (!playerId) {
+        console.log("Player ID not available immediately, retrying in 2 seconds...");
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        playerId = await oneSignalService.getPlayerId();
+      }
+      
       if (playerId) {
         console.log("OneSignal Player ID:", playerId);
         
@@ -88,7 +105,7 @@ const AdminView = ()=>{
         await addPushNotificationDevice(data);
         console.log("OneSignal Player ID stored:", playerId);
       } else {
-        console.log("OneSignal Player ID not available");
+        console.log("OneSignal Player ID not available after retry");
       }
     } catch (err) {
       console.error("Error with OneSignal setup", err);

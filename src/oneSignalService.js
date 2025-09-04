@@ -19,8 +19,8 @@ class OneSignalService {
         await this.waitForOneSignal();
       }
 
-      // Wait a bit more for OneSignal to be fully ready
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Wait for OneSignal to be fully initialized with all methods available
+      await this.waitForOneSignalReady();
 
       this.isInitialized = true;
       console.log('OneSignal is ready');
@@ -50,11 +50,33 @@ class OneSignalService {
     });
   }
 
+  // Wait for OneSignal to be fully ready with all methods available
+  waitForOneSignalReady() {
+    return new Promise((resolve) => {
+      const checkOneSignalReady = () => {
+        if (typeof window.OneSignal !== 'undefined' && 
+            typeof window.OneSignal.getUserId === 'function' &&
+            typeof window.OneSignal.on === 'function') {
+          resolve();
+        } else {
+          setTimeout(checkOneSignalReady, 100);
+        }
+      };
+      checkOneSignalReady();
+    });
+  }
+
   // Get player ID
   async getPlayerId() {
     try {
       if (!this.isInitialized) {
         console.log('OneSignal not initialized');
+        return null;
+      }
+
+      // Check if getUserId method is available
+      if (typeof window.OneSignal.getUserId !== 'function') {
+        console.log('OneSignal.getUserId method not available yet');
         return null;
       }
 
@@ -71,6 +93,13 @@ class OneSignalService {
     try {
       if (!this.isInitialized) {
         console.log('OneSignal not initialized');
+        return;
+      }
+
+      // Check if OneSignal.on method is available
+      if (typeof window.OneSignal.on !== 'function') {
+        console.log('OneSignal.on method not available yet, setting up basic listeners');
+        this.setupBasicNotificationListeners(callback);
         return;
       }
 
@@ -136,6 +165,40 @@ class OneSignalService {
       console.log('OneSignal notification listeners set up successfully');
     } catch (error) {
       console.error('Error setting up notification listeners:', error);
+    }
+  }
+
+  // Set up basic notification listeners when OneSignal.on is not available
+  setupBasicNotificationListeners(callback) {
+    try {
+      console.log('Setting up basic notification listeners');
+      
+      // Listen for custom events that might be sent from the service worker
+      window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'ONESIGNAL_NOTIFICATION') {
+          console.log('OneSignal notification received via message:', event.data);
+          if (callback && typeof callback === 'function') {
+            callback({
+              type: 'notification',
+              data: event.data.payload,
+              timestamp: new Date().toISOString()
+            });
+          }
+        } else if (event.data && event.data.type === 'ONESIGNAL_NOTIFICATION_CLICK') {
+          console.log('OneSignal notification clicked via message:', event.data);
+          if (callback && typeof callback === 'function') {
+            callback({
+              type: 'click',
+              data: event.data.payload,
+              timestamp: new Date().toISOString()
+            });
+          }
+        }
+      });
+
+      console.log('Basic notification listeners set up successfully');
+    } catch (error) {
+      console.error('Error setting up basic notification listeners:', error);
     }
   }
 }
