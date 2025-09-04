@@ -49,8 +49,13 @@ const AdminView = ()=>{
         }
 
         console.log('AdminView: OneSignal is ready, setting up listeners...');
+        
+        // Test notification detection first
+        const testResult = oneSignalService.testNotificationDetection();
+        console.log('AdminView: Notification detection test result:', testResult);
+        
         oneSignalService.setupNotificationListeners((notificationData) => {
-          console.log('AdminView: Received OneSignal notification:', notificationData);
+          console.log('🔔 AdminView: Received OneSignal notification:', notificationData);
           
           const newNotification = {
             id: Date.now(),
@@ -63,6 +68,11 @@ const AdminView = ()=>{
           
           console.log('AdminView: Adding new OneSignal notification:', newNotification);
           setNotifications(prev => [newNotification, ...prev]);
+        });
+        
+        // Also force setup additional listeners for debugging
+        oneSignalService.forceSetupNotificationListeners((notificationData) => {
+          console.log('🔔 AdminView: Received notification via force setup:', notificationData);
         });
       } catch (error) {
         console.error('AdminView: Error setting up OneSignal:', error);

@@ -135,11 +135,49 @@ class OneSignalService {
     return this.playerId;
   }
 
+  // Test notification detection
+  testNotificationDetection() {
+    console.log('🧪 Testing notification detection...');
+    console.log('OneSignal available:', typeof window.OneSignal !== 'undefined');
+    console.log('OneSignal.on available:', typeof window.OneSignal?.on === 'function');
+    console.log('isInitialized:', this.isInitialized);
+    console.log('playerId:', this.playerId);
+    console.log('Notification permission:', Notification?.permission);
+    
+    // Test if we can access OneSignal methods
+    if (typeof window.OneSignal !== 'undefined') {
+      console.log('OneSignal methods available:', Object.keys(window.OneSignal));
+    }
+    
+    return {
+      oneSignalAvailable: typeof window.OneSignal !== 'undefined',
+      oneSignalOnAvailable: typeof window.OneSignal?.on === 'function',
+      isInitialized: this.isInitialized,
+      playerId: this.playerId,
+      notificationPermission: Notification?.permission
+    };
+  }
+
+  // Force setup notification listeners (useful for debugging)
+  forceSetupNotificationListeners(callback) {
+    console.log('🔄 Force setting up notification listeners...');
+    this.setupNotificationListeners(callback);
+    this.setupBasicNotificationListeners(callback);
+    this.setupAdditionalNotificationListeners(callback);
+    this.setupStandardNotificationListeners(callback);
+  }
+
   // Set up notification event listeners
   setupNotificationListeners(callback) {
     try {
+      console.log('Setting up OneSignal notification listeners...');
+      console.log('OneSignal available:', typeof window.OneSignal !== 'undefined');
+      console.log('OneSignal.on available:', typeof window.OneSignal?.on === 'function');
+      console.log('isInitialized:', this.isInitialized);
+
       if (!this.isInitialized) {
-        console.log('OneSignal not initialized');
+        console.log('OneSignal not initialized, setting up basic listeners');
+        this.setupBasicNotificationListeners(callback);
         return;
       }
 
@@ -152,7 +190,7 @@ class OneSignalService {
 
       // Listen for notification received (foreground)
       window.OneSignal.on('notificationDisplay', (event) => {
-        console.log('OneSignal notification received (foreground):', event);
+        console.log('🔔 OneSignal notification received (foreground):', event);
         if (callback && typeof callback === 'function') {
           callback({
             type: 'notification',
@@ -164,7 +202,7 @@ class OneSignalService {
 
       // Listen for notification click
       window.OneSignal.on('notificationClick', (event) => {
-        console.log('OneSignal notification clicked:', event);
+        console.log('👆 OneSignal notification clicked:', event);
         if (callback && typeof callback === 'function') {
           callback({
             type: 'click',
@@ -176,7 +214,7 @@ class OneSignalService {
 
       // Listen for subscription change
       window.OneSignal.on('subscriptionChange', (isSubscribed) => {
-        console.log('OneSignal subscription changed:', isSubscribed);
+        console.log('📱 OneSignal subscription changed:', isSubscribed);
         if (callback && typeof callback === 'function') {
           callback({
             type: 'subscription',
@@ -188,8 +226,9 @@ class OneSignalService {
 
       // Also listen for custom events that might be sent from the service worker
       window.addEventListener('message', (event) => {
+        console.log('📨 Message received:', event.data);
         if (event.data && event.data.type === 'ONESIGNAL_NOTIFICATION') {
-          console.log('OneSignal notification received via message:', event.data);
+          console.log('🔔 OneSignal notification received via message:', event.data);
           if (callback && typeof callback === 'function') {
             callback({
               type: 'notification',
@@ -198,7 +237,7 @@ class OneSignalService {
             });
           }
         } else if (event.data && event.data.type === 'ONESIGNAL_NOTIFICATION_CLICK') {
-          console.log('OneSignal notification clicked via message:', event.data);
+          console.log('👆 OneSignal notification clicked via message:', event.data);
           if (callback && typeof callback === 'function') {
             callback({
               type: 'click',
@@ -209,9 +248,12 @@ class OneSignalService {
         }
       });
 
-      console.log('OneSignal notification listeners set up successfully');
+      // Add additional event listeners for different OneSignal events
+      this.setupAdditionalNotificationListeners(callback);
+
+      console.log('✅ OneSignal notification listeners set up successfully');
     } catch (error) {
-      console.error('Error setting up notification listeners:', error);
+      console.error('❌ Error setting up notification listeners:', error);
     }
   }
 
@@ -222,8 +264,9 @@ class OneSignalService {
       
       // Listen for custom events that might be sent from the service worker
       window.addEventListener('message', (event) => {
+        console.log('📨 Basic message received:', event.data);
         if (event.data && event.data.type === 'ONESIGNAL_NOTIFICATION') {
-          console.log('OneSignal notification received via message:', event.data);
+          console.log('🔔 OneSignal notification received via message:', event.data);
           if (callback && typeof callback === 'function') {
             callback({
               type: 'notification',
@@ -232,7 +275,7 @@ class OneSignalService {
             });
           }
         } else if (event.data && event.data.type === 'ONESIGNAL_NOTIFICATION_CLICK') {
-          console.log('OneSignal notification clicked via message:', event.data);
+          console.log('👆 OneSignal notification clicked via message:', event.data);
           if (callback && typeof callback === 'function') {
             callback({
               type: 'click',
@@ -243,9 +286,101 @@ class OneSignalService {
         }
       });
 
-      console.log('Basic notification listeners set up successfully');
+      // Also listen for standard notification events
+      this.setupStandardNotificationListeners(callback);
+
+      console.log('✅ Basic notification listeners set up successfully');
     } catch (error) {
-      console.error('Error setting up basic notification listeners:', error);
+      console.error('❌ Error setting up basic notification listeners:', error);
+    }
+  }
+
+  // Set up additional notification listeners for different OneSignal events
+  setupAdditionalNotificationListeners(callback) {
+    try {
+      console.log('Setting up additional OneSignal event listeners...');
+
+      // Listen for all available OneSignal events
+      const events = [
+        'notificationDisplay',
+        'notificationClick', 
+        'subscriptionChange',
+        'permissionPromptDisplay',
+        'permissionPromptDismiss',
+        'permissionPromptGrant',
+        'permissionPromptDeny'
+      ];
+
+      events.forEach(eventName => {
+        if (typeof window.OneSignal.on === 'function') {
+          window.OneSignal.on(eventName, (data) => {
+            console.log(`🎯 OneSignal ${eventName} event:`, data);
+            if (callback && typeof callback === 'function') {
+              callback({
+                type: eventName,
+                data: data,
+                timestamp: new Date().toISOString()
+              });
+            }
+          });
+        }
+      });
+
+      console.log('✅ Additional OneSignal event listeners set up');
+    } catch (error) {
+      console.error('❌ Error setting up additional notification listeners:', error);
+    }
+  }
+
+  // Set up standard browser notification listeners
+  setupStandardNotificationListeners(callback) {
+    try {
+      console.log('Setting up standard browser notification listeners...');
+
+      // Listen for notification permission changes
+      if ('Notification' in window) {
+        // Listen for permission changes
+        const checkPermission = () => {
+          const permission = Notification.permission;
+          console.log('🔔 Notification permission changed:', permission);
+          if (callback && typeof callback === 'function') {
+            callback({
+              type: 'permission',
+              data: { permission },
+              timestamp: new Date().toISOString()
+            });
+          }
+        };
+
+        // Check permission initially
+        checkPermission();
+
+        // Listen for focus events that might indicate notification interaction
+        window.addEventListener('focus', () => {
+          console.log('🔄 Window focused - checking for notification interactions');
+          checkPermission();
+        });
+      }
+
+      // Listen for service worker messages
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          console.log('📨 Service worker message:', event.data);
+          if (event.data && event.data.type && event.data.type.includes('notification')) {
+            if (callback && typeof callback === 'function') {
+              callback({
+                type: 'serviceWorker',
+                data: event.data,
+                timestamp: new Date().toISOString()
+              });
+            }
+          }
+        });
+      }
+
+      console.log('✅ Standard notification listeners set up');
+    } catch (error) {
+      console.error('❌ Error setting up standard notification listeners:', error);
     }
   }
 }
