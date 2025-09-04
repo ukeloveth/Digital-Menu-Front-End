@@ -32,6 +32,12 @@ const AdminView = ()=>{
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
+  // Track notifications state changes
+  useEffect(() => {
+    console.log('📊 AdminView: Notifications state changed. Count:', notifications.length);
+    console.log('📊 AdminView: Current notifications:', notifications);
+  }, [notifications]);
+
   // Listen for incoming push notifications
   useEffect(() => {
     console.log('AdminView: Setting up notification listener...');
@@ -56,23 +62,50 @@ const AdminView = ()=>{
         
         oneSignalService.setupNotificationListeners((notificationData) => {
           console.log('🔔 AdminView: Received OneSignal notification:', notificationData);
+          console.log('🔔 AdminView: Notification data structure:', JSON.stringify(notificationData, null, 2));
           
           const newNotification = {
             id: Date.now(),
-            title: notificationData.data?.title || notificationData.data?.heading || 'New Notification',
-            body: notificationData.data?.body || notificationData.data?.content || 'You have a new message',
+            title: notificationData.data?.title || notificationData.data?.heading || notificationData.title || 'New Notification',
+            body: notificationData.data?.body || notificationData.data?.content || notificationData.body || 'You have a new message',
             timestamp: new Date().toLocaleTimeString(),
-            data: notificationData.data || {},
-            read: false
+            data: notificationData.data || notificationData || {},
+            read: false,
+            type: notificationData.type || 'notification'
           };
           
-          console.log('AdminView: Adding new OneSignal notification:', newNotification);
-          setNotifications(prev => [newNotification, ...prev]);
+          console.log('🔔 AdminView: Adding new OneSignal notification:', newNotification);
+          console.log('🔔 AdminView: Current notifications count before:', notifications.length);
+          
+          setNotifications(prev => {
+            const updated = [newNotification, ...prev];
+            console.log('🔔 AdminView: Updated notifications count after:', updated.length);
+            console.log('🔔 AdminView: All notifications:', updated);
+            return updated;
+          });
         });
         
         // Also force setup additional listeners for debugging
         oneSignalService.forceSetupNotificationListeners((notificationData) => {
           console.log('🔔 AdminView: Received notification via force setup:', notificationData);
+          console.log('🔔 AdminView: Force setup notification data structure:', JSON.stringify(notificationData, null, 2));
+          
+          const newNotification = {
+            id: Date.now() + 1000, // Different ID to avoid conflicts
+            title: notificationData.data?.title || notificationData.data?.heading || notificationData.title || 'Force Setup Notification',
+            body: notificationData.data?.body || notificationData.data?.content || notificationData.body || 'You have a new message via force setup',
+            timestamp: new Date().toLocaleTimeString(),
+            data: notificationData.data || notificationData || {},
+            read: false,
+            type: notificationData.type || 'force-setup'
+          };
+          
+          console.log('🔔 AdminView: Adding force setup notification:', newNotification);
+          setNotifications(prev => {
+            const updated = [newNotification, ...prev];
+            console.log('🔔 AdminView: Force setup - Updated notifications count:', updated.length);
+            return updated;
+          });
         });
       } catch (error) {
         console.error('AdminView: Error setting up OneSignal:', error);
@@ -359,6 +392,14 @@ const AdminView = ()=>{
             )}
           </Box>
           
+          {/* Debug info */}
+          <Box sx={{ mb: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+            <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+              Debug: Notifications count: {notifications.length} | 
+              Unread: {notifications.filter(n => !n.read).length}
+            </Typography>
+          </Box>
+
           {notifications.length === 0 ? (
             <Fade in={true}>
               <Box sx={{ 
@@ -393,6 +434,7 @@ const AdminView = ()=>{
                 <Button 
                   variant="outlined"
                   onClick={() => {
+                    console.log('🧪 AdminView: Testing notification UI...');
                     // Simulate receiving a new order notification
                     const mockNotification = {
                       id: Date.now(),
@@ -403,11 +445,20 @@ const AdminView = ()=>{
                         orderId: 'test-123',
                         tableNumber: '5',
                         totalAmount: '24.50'
-                      }
+                      },
+                      read: false,
+                      type: 'test'
                     };
                     
+                    console.log('🧪 AdminView: Adding test notification:', mockNotification);
+                    console.log('🧪 AdminView: Current notifications before:', notifications.length);
+                    
                     // Add the test notification to the list
-                    setNotifications(prev => [mockNotification, ...prev]);
+                    setNotifications(prev => {
+                      const updated = [mockNotification, ...prev];
+                      console.log('🧪 AdminView: Updated notifications after test:', updated.length);
+                      return updated;
+                    });
                     
                     // Also show browser notification if permission granted
                     if (Notification.permission === 'granted') {
